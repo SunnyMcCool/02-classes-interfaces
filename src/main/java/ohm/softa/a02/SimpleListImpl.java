@@ -2,58 +2,77 @@ package ohm.softa.a02;
 
 import java.util.Iterator;
 
-/**
- * @author Peter Kurfer
- * Created on 10/6/17.
- */
 
+// Generic method
+// Implementing this interface allows an object to be the target of the "for-each loop" statement.
 public class SimpleListImpl implements SimpleList, Iterable<Object> {
-    private ListElement head;
-    private int size;
 
+    private Element head;
+    private int length;
+
+    // Constructor
+    // first element (empty list)
     public SimpleListImpl() {
         head = null;
     }
 
-    /**
-     * Add an object to the end of the list
-     *
-     * @param item item to add
-     */
+    // Helper class, static because the Element does not need to access the SimpleList instance
+    private static class Element {
+        // content of element
+        private Object item;
+        private Element next;
+
+        // Constructor
+        Element(Object item) {
+            // this.item (above), item (Object item)
+            this.item = item;
+            this.next = null;
+        }
+
+        // return content of item
+        public Object getItem() {
+            return item;
+        }
+
+        // get right neighbour, may be null
+        public Element getNext() {
+            return next;
+        }
+
+        // set element to next element
+        public void setNext(Element next) {
+            this.next = next;
+        }
+    }
+
+    // add element to the end of the list
     public void add(Object item) {
-        /* special case empty list */
+        // empty list
         if (head == null) {
-            head = new ListElement(item);
+            head = new Element(item);
         } else {
-            /* any other list length */
-            ListElement current = head;
+            // start with head element
+            Element current = head;
             while (current.getNext() != null) {
                 current = current.getNext();
             }
-
-            ListElement newbie = new ListElement(item);
+            // create new element
+            Element newbie = new Element(item);
+            // add newbie to last element
             current.setNext(newbie);
         }
-        size++;
+        length++;
     }
 
-    /**
-     * @return size of the list
-     */
-    public int size() {
-        return size;
+    // return list length
+    public int length() {
+        return length;
     }
 
-    /**
-     * Get a new SimpleList instance with all items of this list which match the given filter
-     *
-     * @param filter SimpleFilter instance
-     * @return new SimpleList instance
-     */
 
-    // A, B, C, D
-    // A, C
-    // testList.filter(o -> ((int)o) % 2 == 0);
+    // Get a new SimpleList instance with all items of this list which match the given filter
+    // @param filter SimpleFilter instance; testList.filter(o -> ((int)o) % 2 == 0);
+    // A(0), B(1), C(2), D(3) => A, C
     public SimpleList filter(SimpleFilter filter) {
         SimpleList result = new SimpleListImpl();
         for (Object o : this) {
@@ -61,81 +80,42 @@ public class SimpleListImpl implements SimpleList, Iterable<Object> {
                 result.add(o);
             }
         }
+        // @return new SimpleList instance
         return result;
     }
 
-    /**
-     * @inheritDoc
-     */
+    //  @inheritDoc
+    // Iterator = Objekte, die dem Durchlaufen von Collections dienen
     @Override
     public Iterator<Object> iterator() {
         return new SimpleIteratorImpl();
     }
 
-    /**
-     * Helper class which implements the Iterator<T> interface
-     * Has to be non static because otherwise it could not access the head of the list
-     */
+    // Helper class which implements the Iterator<T> interface
+    // Has to be non static because otherwise it could not access the head of the list
     private class SimpleIteratorImpl implements Iterator<Object> {
 
-        private ListElement current = head;
+        // current is head element at the beginning
+        private Element current = head;
 
-        /**
-         * @inheritDoc
-         */
+        // @inheritDoc
+        // Methode hasNext() liefert true, solange  Iterator noch nicht das Ende der Collection erreicht hat
         @Override
         public boolean hasNext() {
             // current.next ?
             return current != null;
         }
 
-        /**
-         * @inheritDoc
-         */
+        // @inheritDoc
+        // Next() greift  auf das jeweils nächste Element zu
         @Override
         public Object next() {
+            // tmp = Anna
             Object tmp = current.getItem();
+            // current = Element2, weiterlaufen
             current = current.getNext();
+            // Anna
             return tmp;
         }
-
     }
-
-    /**
-     * Helper class for the linked list
-     * can be static because the ListElement does not need to access the SimpleList instance
-     */
-    private static class ListElement {
-        private Object item;
-        private ListElement next;
-
-        ListElement(Object item) {
-            this.item = item;
-            this.next = null;
-        }
-
-        /**
-         * @return get object in the element
-         */
-        public Object getItem() {
-            return item;
-        }
-
-        /**
-         * @return successor of the ListElement - may be NULL
-         */
-        public ListElement getNext() {
-            return next;
-        }
-
-        /**
-         * Sets the successor of the ListElement
-         *
-         * @param next ListElement
-         */
-        public void setNext(ListElement next) {
-            this.next = next;
-        }
-    }
-
 }

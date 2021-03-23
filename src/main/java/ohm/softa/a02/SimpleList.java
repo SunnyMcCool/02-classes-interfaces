@@ -1,19 +1,13 @@
 package ohm.softa.a02;
 
+// unverändert
 public interface SimpleList {
-	/**
-	 * Add a given object to the back of the list.
-	 */
+	// Add object to the list end
 	void add(Object o);
 
-	/**
-	 * @return current size of the list
-	 */
-	int size();
+	// return list length
+	int length();
 
-	/**
-	 * Generate a new list using the given filter instance.
-	 * @return a new, filtered list
-	 */
+	// Generate new list using the given filter instance and return a new, filtered list
 	SimpleList filter(SimpleFilter filter);
 }

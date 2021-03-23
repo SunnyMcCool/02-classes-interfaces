@@ -38,7 +38,7 @@ public class SimpleListTest {
 
 	@Test
 	void testSize(){
-		assertEquals(5, testList.size());
+		assertEquals(5, testList.length());
 	}
 
 	@Test
